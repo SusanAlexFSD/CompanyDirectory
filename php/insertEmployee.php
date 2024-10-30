@@ -4,13 +4,11 @@ ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 
 $executionStartTime = microtime(true);
-
 include('../config/config.php');
-
 header('Content-Type: application/json; charset=UTF-8');
 
 // Check for required POST fields
-if (!isset($_POST['firstName'], $_POST['lastName'], $_POST['email'], $_POST['department'], $_POST['location'])) {
+if (!isset($_POST['firstName'], $_POST['lastName'], $_POST['email'], $_POST['departmentID'], $_POST['locationID'])) {
     $response['status'] = ['code' => 400, 'description' => 'Missing required fields.'];
     echo json_encode($response);
     exit;
@@ -24,7 +22,7 @@ $departmentId = $_POST['department'];  // Ensure this is correctly sent
 $locationId = $_POST['location'];  // Location ID
 
 // Prepare the SQL statement
-$sql = "INSERT INTO personnel (firstName, lastName, email, department_id, location_id) VALUES (?, ?, ?, ?, ?, ?)";
+$sql = "INSERT INTO personnel (firstName, lastName, email, department_id, location_id) VALUES (?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
 
 // Check if the statement preparation succeeded
@@ -34,7 +32,9 @@ if (!$stmt) {
     exit;
 }
 
-$stmt->bind_param("ssssss", $firstName, $lastName, $email, $departmentId, $locationId);
+// Bind parameters correctly
+$stmt->bind_param("sssss", $firstName, $lastName, $email, $departmentID, $locationID);
+
 
 // Execute the statement and check for errors
 $response = [];

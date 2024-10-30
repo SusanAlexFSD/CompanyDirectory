@@ -447,4 +447,3 @@ $("#editPersonnelForm").on("submit", function(e) {
 // DELETE DEPARTMENT FUNCTION
 
 // DELETE LOCATIONS FUNCTION 
-
