@@ -325,13 +325,18 @@ $("#filterForm").on("submit", function(e) {
 // ADD EMPLOYEE FUNCTION
 
 $("#addEmployeeForm").on("submit", function(e) {
-    e.preventDefault();
+    e.preventDefault(); // Prevents form from submitting the traditional way
+
     var employeeData = {
         firstName: $("#addFirstName").val(),
         lastName: $("#addLastName").val(),
         email: $("#addEmail").val(),
-        department: $("#addDepartment").val()  
+        departmentID: $("#addDepartment").val(),
+        locationID: $("#addLocation").val()
     };
+    
+
+    console.log("Employee Data:", employeeData); // Verify data here
 
     $.ajax({
         url: "php/insertEmployee.php",
@@ -340,25 +345,33 @@ $("#addEmployeeForm").on("submit", function(e) {
         dataType: "json",
         success: function(response) {
             if (response.status.code === 200) {
-                loadPersonnelData();
-                $('#addEmployeeModal').modal('hide');
+                loadPersonnelData(); // Refresh personnel data
+                $('#addEmployeeModal').modal('hide'); // Close modal
+                $("#addEmployeeForm")[0].reset(); // Reset form
             } else {
                 console.error("Error adding employee:", response.status.description);
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error("AJAX error:", textStatus);
-            console.error('Error fetching data:', textStatus, errorThrown);
-            console.log('Response:', jqXHR.responseText); 
+            console.log('Response:', jqXHR.responseText);
         }
     });
-});
+    });
+
+
+
 
 // Open Add Employee Modal
 $("#addBtn").click(function() {
     loadDepartmentAndLocationOptions();
     $('#addEmployeeModal').modal('show');
 });
+
+$("#addEmployeeForm button[type='submit']").click(function() {
+    console.log("Submit button clicked");
+});
+
 
 // Tab Activation
 $("#personnelBtn").click(function() {
