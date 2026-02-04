@@ -137,19 +137,19 @@ app.put("/api/personnel/:id", async (req, res) => {
 });
 
 // DELETE PERSON
+// Delete personnel
 app.delete("/api/personnel/:id", async (req, res) => {
-  try {
-    await pool.query(
-      "DELETE FROM personnel WHERE id = $1",
-      [req.params.id]
-    );
+  const { id } = req.params;
 
+  try {
+    await pool.query("DELETE FROM personnel WHERE id = $1", [id]);
     res.json({ status: "ok" });
   } catch (err) {
-    console.error(err);
+    console.error("Delete error:", err);
     res.status(500).json({ error: "Database error" });
   }
 });
+
 // -------------------- DEPARTMENTS --------------------
 
 app.get("/api/departments", async (req, res) => {

@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:3000";
+const API_BASE = "https://companydirectory-n5h3.onrender.com";
 
 // ==================== LOAD PERSONNEL ====================
 function loadPersonnelData() {
