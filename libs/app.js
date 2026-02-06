@@ -1,4 +1,4 @@
-const API_BASE = "https://companydirectory-y2uo.onrender.com";
+const API_BASE = "https://companydirectory-kday.onrender.com";
 
 // ==================== LOAD PERSONNEL ====================
 function loadPersonnelData() {
