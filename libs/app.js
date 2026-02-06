@@ -1,17 +1,17 @@
-const API_BASE = "https://companydirectory-n5h3.onrender.com";
+const API_BASE = "https://companydirectory-y2uo.onrender.com";
 
 // ==================== LOAD PERSONNEL ====================
 function loadPersonnelData() {
   $.getJSON(`${API_BASE}/api/personnel`, function (result) {
-    if (result.status.code === "200") {
+    if (result.status.code === 200) {
       $("#personnelTableBody").empty();
 
       result.data.forEach(person => {
         $("#personnelTableBody").append(`
           <tr>
             <td class="align-middle">${person.firstName} ${person.lastName}</td>
-            <td class="align-middle d-none d-md-table-cell">${person.departmentID || ""}</td>
-            <td class="align-middle d-none d-md-table-cell">${person.locationID || ""}</td>
+            <td class="align-middle d-none d-md-table-cell">${person.departmentName || ""}</td>
+            <td class="align-middle d-none d-md-table-cell">${person.locationName || ""}</td>
             <td class="align-middle d-none d-md-table-cell">${person.email}</td>
             <td class="text-end">
               <button class="btn btn-danger btn-sm deletePersonnelBtn" data-id="${person.id}">
@@ -75,6 +75,19 @@ function loadDepartmentDropdown() {
   });
 }
 
+
+function loadLocationDropdown() { 
+  $.getJSON(`${API_BASE}/api/locations`, function (result) { 
+    if (result.status.code === "200") { 
+      const select = $("#addLocation"); select.empty().append(`<option value="">Select Location</option>`); 
+
+      result.data.forEach(loc => { 
+        select.append(`<option value="${loc.id}">${loc.name}</option>`); 
+      }); 
+    } 
+  }); 
+}
+
 // ==================== ADD EMPLOYEE ====================
 $("#addEmployeeForm").on("submit", function (e) {
   e.preventDefault();
@@ -129,6 +142,7 @@ $(document).ready(function () {
   loadDepartmentsData();
   loadLocationsData();
   loadDepartmentDropdown();
+  loadLocationDropdown(); 
 });
 
 
