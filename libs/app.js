@@ -99,10 +99,11 @@ $("#addEmployeeForm").on("submit", function (e) {
   const employeeData = { 
     firstName: $("#addFirstName").val(), 
     lastName: $("#addLastName").val(), 
-    mail: $("#addEmail").val(), 
+    email: $("#addEmail").val(), 
     departmentID: $("#addDepartmentID").val(), 
     locationID: $("#addLocation").val() 
   };
+
 
   $.ajax({
     url: `${API_BASE}/api/personnel`,

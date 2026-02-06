@@ -48,7 +48,7 @@ app.get("/api/personnel", async (req, res) => {
         l.name AS "locationName"
       FROM personnel p
       LEFT JOIN department d ON p.departmentid = d.id
-      LEFT JOIN location l ON d.locationid = l.id
+      LEFT JOIN location l ON p.locationid = l.id
       ORDER BY p.lastname, p.firstname;
     `);
 
@@ -61,6 +61,7 @@ app.get("/api/personnel", async (req, res) => {
     res.status(500).json({ error: "Database error" });
   }
 });
+
 
 app.get("/api/personnel/:id", async (req, res) => {
   try {
