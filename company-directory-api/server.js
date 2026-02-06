@@ -17,19 +17,20 @@ app.get("/api/personnel", async (req, res) => {
   const start = Date.now();
 
   try {
-    const query = `
+      const query = `
       SELECT 
         p.id,
-        p.first_name AS "firstName",
-        p.last_name AS "lastName",
+        p."firstName" AS "firstName",
+        p."lastName" AS "lastName",
         p.email,
-        d.name AS "departmentID",
-        l.name AS "locationID"
+        d.name AS "departmentName",
+        l.name AS "locationName"
       FROM personnel p
-      LEFT JOIN department d ON p.department_id = d.id
-      LEFT JOIN location l ON d.location_id = l.id
-      ORDER BY p.last_name, p.first_name, d.name, l.name;
+      LEFT JOIN department d ON p."departmentID" = d.id
+      LEFT JOIN location l ON d."locationID" = l.id
+      ORDER BY p."lastName", p."firstName", d.name, l.name;
     `;
+
 
     const { rows } = await pool.query(query);
 
