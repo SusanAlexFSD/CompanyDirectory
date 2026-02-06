@@ -94,12 +94,13 @@ app.post("/api/personnel", async (req, res) => {
     const { firstName, lastName, email, departmentID, locationID } = req.body;
 
     await pool.query(
-      `
-      INSERT INTO personnel (firstname, lastname, email, departmentid, locationid)
-      VALUES ($1, $2, $3, $4, $5)
-      `,
-      [firstName, lastName, email, departmentID, locationID]
-    );
+        `
+        INSERT INTO personnel (firstname, lastname, email, departmentid, locationid)
+        VALUES ($1, $2, $3, $4, $5)
+        `,
+        [firstName, lastName, email, departmentID, locationID]
+      );
+
 
     res.json({ status: { code: 200, name: "ok" } });
   } catch (err) {
