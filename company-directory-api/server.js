@@ -10,14 +10,14 @@ app.use(express.json());
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false } // required on Render
+  ssl: { rejectUnauthorized: false }
 });
 
 app.get("/api/personnel", async (req, res) => {
   const start = Date.now();
 
   try {
-const query = `
+    const query = `
       SELECT 
         p.id,
         p.firstname AS "firstName",
@@ -30,8 +30,6 @@ const query = `
       LEFT JOIN location l ON d.locationid = l.id
       ORDER BY p.lastname, p.firstname, d.name, l.name;
     `;
-
-
 
     const { rows } = await pool.query(query);
 
@@ -64,5 +62,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
   console.log("DATABASE_URL:", process.env.DATABASE_URL);
-
 });

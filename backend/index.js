@@ -41,16 +41,16 @@ app.get("/api/personnel", async (req, res) => {
     const result = await pool.query(`
       SELECT
         p.id,
-        p.first_name AS "firstName",
-        p.last_name AS "lastName",
+        p.firstname AS "firstName",
+        p.lastname AS "lastName",
         p.email,
         d.id AS "departmentID",
         d.name AS "departmentName",
         l.name AS "locationName"
       FROM personnel p
-      LEFT JOIN department d ON p.department_id = d.id
-      LEFT JOIN location l ON d.location_id = l.id
-      ORDER BY p.last_name, p.first_name
+      LEFT JOIN department d ON p.departmentid = d.id
+      LEFT JOIN location l ON d.locationid = l.id
+      ORDER BY p.lastname, p.firstname
     `);
 
     res.json({
@@ -63,23 +63,21 @@ app.get("/api/personnel", async (req, res) => {
   }
 });
 
-// GET ONE PERSON (EDIT)
+// GET ONE PERSON
 app.get("/api/personnel/:id", async (req, res) => {
   try {
-    const { id } = req.params;
-
     const result = await pool.query(
       `
       SELECT
         id,
-        first_name AS "firstName",
-        last_name AS "lastName",
+        firstname AS "firstName",
+        lastname AS "lastName",
         email,
-        department_id AS "departmentID"
+        departmentid AS "departmentID"
       FROM personnel
       WHERE id = $1
       `,
-      [id]
+      [req.params.id]
     );
 
     res.json({
@@ -99,7 +97,7 @@ app.post("/api/personnel", async (req, res) => {
 
     await pool.query(
       `
-      INSERT INTO personnel (first_name, last_name, email, department_id)
+      INSERT INTO personnel (firstname, lastname, email, departmentid)
       VALUES ($1, $2, $3, $4)
       `,
       [firstName, lastName, email, departmentID]
@@ -114,16 +112,16 @@ app.post("/api/personnel", async (req, res) => {
 
 // UPDATE PERSON
 app.put("/api/personnel/:id", async (req, res) => {
-  const { firstName, lastName, email, departmentID } = req.body;
-
   try {
+    const { firstName, lastName, email, departmentID } = req.body;
+
     await pool.query(
       `
       UPDATE personnel
-      SET first_name = $1,
-          last_name = $2,
+      SET firstname = $1,
+          lastname = $2,
           email = $3,
-          department_id = $4
+          departmentid = $4
       WHERE id = $5
       `,
       [firstName, lastName, email, departmentID, req.params.id]
@@ -131,18 +129,15 @@ app.put("/api/personnel/:id", async (req, res) => {
 
     res.json({ status: "ok" });
   } catch (err) {
-    console.error(err);
+    console.error("Update error:", err);
     res.status(500).json({ error: "Database error" });
   }
 });
 
 // DELETE PERSON
-// Delete personnel
 app.delete("/api/personnel/:id", async (req, res) => {
-  const { id } = req.params;
-
   try {
-    await pool.query("DELETE FROM personnel WHERE id = $1", [id]);
+    await pool.query("DELETE FROM personnel WHERE id = $1", [req.params.id]);
     res.json({ status: "ok" });
   } catch (err) {
     console.error("Delete error:", err);
@@ -160,7 +155,7 @@ app.get("/api/departments", async (req, res) => {
         d.name,
         l.name AS "locationName"
       FROM department d
-      LEFT JOIN location l ON d.location_id = l.id
+      LEFT JOIN location l ON d.locationid = l.id
       ORDER BY d.name
     `);
 
@@ -174,22 +169,15 @@ app.get("/api/departments", async (req, res) => {
   }
 });
 
-
 app.delete("/api/departments/:id", async (req, res) => {
   try {
-    await pool.query(
-      "DELETE FROM department WHERE id = $1",
-      [req.params.id]
-    );
-
+    await pool.query("DELETE FROM department WHERE id = $1", [req.params.id]);
     res.json({ status: "ok" });
   } catch (err) {
-    console.error(err);
+    console.error("Delete department error:", err);
     res.status(500).json({ error: "Database error" });
   }
 });
-
-
 
 // -------------------- LOCATIONS --------------------
 
@@ -215,5 +203,5 @@ app.get("/api/locations", async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ API running on port ${PORT}`);
+  console.log(`API running on port ${PORT}`);
 });
