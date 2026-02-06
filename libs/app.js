@@ -4,8 +4,11 @@ const API_BASE = "https://companydirectory-kday.onrender.com";
 function loadPersonnelData() {
   $.getJSON(`${API_BASE}/api/personnel`, function (result) {
     if (result.status.code === 200) {
+
+      // Clear table
       $("#personnelTableBody").empty();
 
+      // Build table rows
       result.data.forEach(person => {
         $("#personnelTableBody").append(`
           <tr>
@@ -21,9 +24,56 @@ function loadPersonnelData() {
           </tr>
         `);
       });
+
+      // -----------------------------
+      // Build filter dropdowns
+      // -----------------------------
+      const deptSet = new Set();
+      const locSet = new Set();
+
+      result.data.forEach(person => {
+        if (person.departmentName) deptSet.add(person.departmentName);
+        if (person.locationName) locSet.add(person.locationName);
+      });
+
+      // Department filter
+      const deptFilter = $("#filterDepartment");
+      deptFilter.empty().append(`<option value="">Filter by Department</option>`);
+      deptSet.forEach(dep => {
+        deptFilter.append(`<option value="${dep}">${dep}</option>`);
+      });
+
+      // Location filter
+      const locFilter = $("#filterLocation");
+      locFilter.empty().append(`<option value="">Filter by Location</option>`);
+      locSet.forEach(loc => {
+        locFilter.append(`<option value="${loc}">${loc}</option>`);
+      });
     }
   });
 }
+
+// ==================== FILTER LOGIC ====================
+$("#filterDepartment, #filterLocation").on("change", function () {
+  const selectedDept = $("#filterDepartment").val();
+  const selectedLoc = $("#filterLocation").val();
+
+  $("#personnelTableBody tr").each(function () {
+    const dept = $(this).find("td:nth-child(2)").text().trim();
+    const loc = $(this).find("td:nth-child(3)").text().trim();
+
+    const deptMatch = !selectedDept || dept === selectedDept;
+    const locMatch = !selectedLoc || loc === selectedLoc;
+
+    $(this).toggle(deptMatch && locMatch);
+  });
+});
+
+// ==================== APPLY BUTTON (FILTER MODAL) ====================
+$("#filterForm button").on("click", function () {
+  $("#filterDepartment, #filterLocation").trigger("change");
+  $("#filterModal").modal("hide");
+});
 
 // ==================== LOAD DEPARTMENTS ====================
 function loadDepartmentsData() {
@@ -42,7 +92,6 @@ function loadDepartmentsData() {
     }
   });
 }
-
 
 // ==================== LOAD LOCATIONS ====================
 function loadLocationsData() {
@@ -75,8 +124,6 @@ function loadDepartmentDropdown() {
   });
 }
 
-
-
 function loadLocationDropdown() { 
   $.getJSON(`${API_BASE}/api/locations`, function (result) { 
     if (result.status.code === 200) { 
@@ -90,8 +137,6 @@ function loadLocationDropdown() {
   }); 
 }
 
-
-
 // ==================== ADD EMPLOYEE ====================
 $("#addEmployeeForm").on("submit", function (e) {
   e.preventDefault();
@@ -103,7 +148,6 @@ $("#addEmployeeForm").on("submit", function (e) {
     departmentID: $("#addDepartmentID").val(), 
     locationID: $("#addLocation").val() 
   };
-
 
   $.ajax({
     url: `${API_BASE}/api/personnel`,
@@ -132,6 +176,9 @@ $("#searchInp").on("keyup", function () {
 // ==================== REFRESH ====================
 $("#refreshBtn").click(function () {
   $("#searchInp").val("");
+  $("#filterDepartment").val("");
+  $("#filterLocation").val("");
+
   if ($("#personnelBtn").hasClass("active")) loadPersonnelData();
   if ($("#departmentsBtn").hasClass("active")) loadDepartmentsData();
   if ($("#locationsBtn").hasClass("active")) loadLocationsData();
@@ -151,9 +198,7 @@ $(document).ready(function () {
   loadLocationDropdown(); 
 });
 
-
-
-// Delete personnel
+// ==================== DELETE PERSONNEL ====================
 $(document).on("click", ".deletePersonnelBtn", function () {
   const id = $(this).data("id");
 
