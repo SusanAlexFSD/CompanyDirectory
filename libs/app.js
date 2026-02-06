@@ -28,14 +28,14 @@ function loadPersonnelData() {
 // ==================== LOAD DEPARTMENTS ====================
 function loadDepartmentsData() {
   $.getJSON(`${API_BASE}/api/departments`, function (result) {
-    if (result.status.code === "200") {
+    if (result.status.code === 200) {
       $("#departmentTableBody").empty();
 
       result.data.forEach(dep => {
         $("#departmentTableBody").append(`
           <tr>
             <td class="align-middle">${dep.name}</td>
-            <td class="align-middle d-none d-md-table-cell">${dep.location || ""}</td>
+            <td class="align-middle d-none d-md-table-cell">${dep.locationName || ""}</td>
           </tr>
         `);
       });
@@ -47,7 +47,7 @@ function loadDepartmentsData() {
 // ==================== LOAD LOCATIONS ====================
 function loadLocationsData() {
   $.getJSON(`${API_BASE}/api/locations`, function (result) {
-    if (result.status.code === "200") {
+    if (result.status.code === 200) {
       $("#locationTableBody").empty();
 
       result.data.forEach(loc => {
@@ -64,7 +64,7 @@ function loadLocationsData() {
 // ==================== DROPDOWNS ====================
 function loadDepartmentDropdown() {
   $.getJSON(`${API_BASE}/api/departments`, function (result) {
-    if (result.status.code === "200") {
+    if (result.status.code === 200) {
       const select = $("#addDepartmentID");
       select.empty().append(`<option value="">Select Department</option>`);
 
@@ -76,10 +76,12 @@ function loadDepartmentDropdown() {
 }
 
 
+
 function loadLocationDropdown() { 
   $.getJSON(`${API_BASE}/api/locations`, function (result) { 
-    if (result.status.code === "200") { 
-      const select = $("#addLocation"); select.empty().append(`<option value="">Select Location</option>`); 
+    if (result.status.code === 200) { 
+      const select = $("#addLocation");
+      select.empty().append(`<option value="">Select Location</option>`); 
 
       result.data.forEach(loc => { 
         select.append(`<option value="${loc.id}">${loc.name}</option>`); 
@@ -88,15 +90,18 @@ function loadLocationDropdown() {
   }); 
 }
 
+
+
 // ==================== ADD EMPLOYEE ====================
 $("#addEmployeeForm").on("submit", function (e) {
   e.preventDefault();
 
-  const employeeData = {
-    firstName: $("#addFirstName").val(),
-    lastName: $("#addLastName").val(),
-    email: $("#addEmail").val(),
-    departmentID: $("#addDepartmentID").val()
+  const employeeData = { 
+    firstName: $("#addFirstName").val(), 
+    lastName: $("#addLastName").val(), 
+    mail: $("#addEmail").val(), 
+    departmentID: $("#addDepartmentID").val(), 
+    locationID: $("#addLocation").val() 
   };
 
   $.ajax({

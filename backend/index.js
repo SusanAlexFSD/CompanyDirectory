@@ -1,3 +1,5 @@
+console.log("Backend loaded from:", process.cwd());
+
 import express from "express";
 import cors from "cors";
 import pkg from "pg";
@@ -9,6 +11,7 @@ const { Pool } = pkg;
 const app = express();
 app.use(cors());
 app.use(express.json());
+
 
 // -------------------- DATABASE --------------------
 
@@ -199,9 +202,13 @@ app.get("/api/locations", async (req, res) => {
   }
 });
 
+
+console.log("About to start server…");
 // -------------------- START SERVER --------------------
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
+    console.log("SERVER LISTEN CALLBACK FIRED");
   console.log(`API running on port ${PORT}`);
 });
+setInterval(() => {}, 1000);

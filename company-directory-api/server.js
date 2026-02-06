@@ -88,16 +88,17 @@ app.get("/api/personnel/:id", async (req, res) => {
   }
 });
 
+
 app.post("/api/personnel", async (req, res) => {
   try {
-    const { firstName, lastName, email, departmentID } = req.body;
+    const { firstName, lastName, email, departmentID, locationID } = req.body;
 
     await pool.query(
       `
-      INSERT INTO personnel (firstname, lastname, email, departmentid)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO personnel (firstname, lastname, email, departmentid, locationid)
+      VALUES ($1, $2, $3, $4, $5)
       `,
-      [firstName, lastName, email, departmentID]
+      [firstName, lastName, email, departmentID, locationID]
     );
 
     res.json({ status: { code: 200, name: "ok" } });
@@ -106,6 +107,8 @@ app.post("/api/personnel", async (req, res) => {
     res.status(500).json({ error: "Database error" });
   }
 });
+
+
 
 app.put("/api/personnel/:id", async (req, res) => {
   try {
